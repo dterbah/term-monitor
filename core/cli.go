@@ -16,7 +16,10 @@ type GraphInformation struct {
 }
 
 var Graphs = []GraphInformation{
-	{title: "Used RAM (in %)", callback: metric.GetUsedRamPercent},
+	{title: "Used RAM (in %)", callback: func() float64 {
+		ram := adapter.GopsRAMAdapter{}
+		return metric.GetUsedRamPercent(ram)
+	}},
 	{title: "Used CPU (in %)", callback: func() float64 {
 		cpu := adapter.GopsCPUAdapter{}
 		return metric.GetUsedCPUPercent(cpu)
