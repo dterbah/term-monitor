@@ -24,12 +24,17 @@ var Graphs = []GraphInformation{
 		cpu := adapter.GopsCPUAdapter{}
 		return metric.GetUsedCPUPercent(cpu)
 	}},
+	{title: "Ping (in ms)", callback: func() float64 {
+		ping, _ := metric.GetPing()
+		return ping
+	}},
 }
 
 // Args passed to the program to show different graph
 type CLIArgs struct {
-	ShowRAM bool
-	ShowCPU bool
+	ShowRAM  bool
+	ShowCPU  bool
+	ShowPing bool
 }
 
 func RunCLI(args CLIArgs) {
@@ -38,7 +43,7 @@ func RunCLI(args CLIArgs) {
 	}
 
 	// Must follow the same order as Graphs constant
-	flattenArgs := []bool{args.ShowRAM, args.ShowCPU}
+	flattenArgs := []bool{args.ShowRAM, args.ShowCPU, args.ShowPing}
 
 	defer ui.Close()
 
@@ -63,17 +68,21 @@ func RunCLI(args CLIArgs) {
 	graphHeight := height / int((math.Ceil(float64(rows) / float64(2))))
 	currentHeight := 0
 
-	for i, arg := range flattenArgs {
-		x1 := (i % 2) * halfWidth
-		x2 := ((i % 2) + 1) * halfWidth
-		if i%2 == 1 && i > 1 {
-			currentHeight += graphHeight
-		}
+	graphsDisplayed := 0
 
-		y1 := currentHeight
-		y2 := currentHeight + graphHeight
+	for i, arg := range flattenArgs {
+		x1 := (graphsDisplayed % 2) * halfWidth
+		x2 := ((graphsDisplayed % 2) + 1) * halfWidth
 
 		if arg {
+			graphsDisplayed++
+			if graphsDisplayed%2 == 1 && graphsDisplayed > 1 {
+				currentHeight += graphHeight
+			}
+
+			y1 := currentHeight
+			y2 := currentHeight + graphHeight
+
 			graphInformation := Graphs[i]
 			// display the associated graph
 			go DisplayGraph(GraphPosition{
