@@ -28,13 +28,18 @@ var Graphs = []GraphInformation{
 		ping, _ := metric.GetPing()
 		return ping
 	}},
+	{title: "Proccesse count", callback: func() float64 {
+		proccess := adapter.GopsProcessAdapter{}
+		return float64(metric.GetProcessesCount(proccess))
+	}},
 }
 
 // Args passed to the program to show different graph
 type CLIArgs struct {
-	ShowRAM  bool
-	ShowCPU  bool
-	ShowPing bool
+	ShowRAM       bool
+	ShowCPU       bool
+	ShowPing      bool
+	ShowProcesses bool
 }
 
 func RunCLI(args CLIArgs) {
@@ -43,7 +48,7 @@ func RunCLI(args CLIArgs) {
 	}
 
 	// Must follow the same order as Graphs constant
-	flattenArgs := []bool{args.ShowRAM, args.ShowCPU, args.ShowPing}
+	flattenArgs := []bool{args.ShowRAM, args.ShowCPU, args.ShowPing, args.ShowProcesses}
 
 	defer ui.Close()
 
