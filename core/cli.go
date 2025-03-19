@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/dterbah/gods/list/arraylist"
+	"github.com/dterbah/term-monitor/core/adapter"
 	"github.com/dterbah/term-monitor/core/metric"
 	ui "github.com/gizak/termui/v3"
 )
@@ -16,7 +17,10 @@ type GraphInformation struct {
 
 var Graphs = []GraphInformation{
 	{title: "Used RAM (in %)", callback: metric.GetUsedRamPercent},
-	{title: "Used CPU (in %)", callback: metric.GetUsedCPUPercent},
+	{title: "Used CPU (in %)", callback: func() float64 {
+		cpu := adapter.GopsCPUAdapter{}
+		return metric.GetUsedCPUPercent(cpu)
+	}},
 }
 
 // Args passed to the program to show different graph
