@@ -46,66 +46,56 @@ func RunCLI(args CLIArgs) {
 	if err := ui.Init(); err != nil {
 		log.Fatalf("failed to initialize termui : %s", err)
 	}
-
-	// Must follow the same order as Graphs constant
-	flattenArgs := []bool{args.ShowRAM, args.ShowCPU, args.ShowPing, args.ShowProcesses}
-
 	defer ui.Close()
 
-	width, height, error := GetTerminalSize()
-	if error != nil {
-		log.Fatalf("cannot retrieve terminal size : %v", error)
+	width, height, err := GetTerminalSize()
+	if err != nil {
+		log.Fatalf("cannot retrieve terminal size : %v", err)
 		return
 	}
 
-	/* We want to display 2 graphs by row */
-	rows := arraylist.New(func(a, b bool) int {
-		if a == b {
-			return 0
-		}
+	// Liste des graphiques activés
+	flattenArgs := []bool{args.ShowRAM, args.ShowCPU, args.ShowPing, args.ShowProcesses}
+	activeGraphs := arraylist.New(func(a, b bool) int { return 0 }, flattenArgs...).
+		Filter(func(e bool) bool { return e }).Size()
 
-		return -1
-	}, flattenArgs...).Filter(func(element bool) bool {
-		return element
-	}).Size()
+	if activeGraphs == 0 {
+		log.Println("No metrics selected. Exiting.")
+		return
+	}
 
-	halfWidth := width / 2
-	graphHeight := height / int((math.Ceil(float64(rows) / float64(2))))
-	currentHeight := 0
+	cols := 2
+	rows := int(math.Ceil(float64(activeGraphs) / float64(cols)))
 
-	graphsDisplayed := 0
+	halfWidth := width / cols
+	graphHeight := height / rows
+	currentRow := 0
+	currentCol := 0
 
-	for i, arg := range flattenArgs {
-		x1 := (graphsDisplayed % 2) * halfWidth
-		x2 := ((graphsDisplayed % 2) + 1) * halfWidth
+	for i, showGraph := range flattenArgs {
+		if showGraph {
+			x1 := currentCol * halfWidth
+			x2 := x1 + halfWidth
+			y1 := currentRow * graphHeight
+			y2 := y1 + graphHeight
 
-		if arg {
-			graphsDisplayed++
-			if graphsDisplayed%2 == 1 && graphsDisplayed > 1 {
-				currentHeight += graphHeight
+			graphInfo := Graphs[i]
+			go DisplayGraph(GraphPosition{x1, x2, y1, y2}, graphInfo.callback, graphInfo.title)
+
+			currentCol++
+			if currentCol >= cols {
+				currentCol = 0
+				currentRow++
 			}
-
-			y1 := currentHeight
-			y2 := currentHeight + graphHeight
-
-			graphInformation := Graphs[i]
-			// display the associated graph
-			go DisplayGraph(GraphPosition{
-				x1: x1,
-				x2: x2,
-				y1: y1,
-				y2: y2,
-			}, graphInformation.callback, graphInformation.title)
 		}
 	}
-	uiEvents := ui.PollEvents()
 
-	// listen to user events
+	// Gestion des événements
+	uiEvents := ui.PollEvents()
 	for {
 		select {
 		case e := <-uiEvents:
-			switch e.ID {
-			case "q", "<C-c>":
+			if e.ID == "q" || e.ID == "<C-c>" {
 				return
 			}
 		}
