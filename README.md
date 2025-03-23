@@ -3,6 +3,7 @@
 ## Overview
 
 **term-monitor** is a lightweight command-line tool that provides real-time system monitoring information. It allows users to display various system metrics such as RAM usage, CPU usage, network latency (ping), and the number of running processes.
+⚠️ Only tested on MACOS !!
 
 ## Features
 
@@ -43,8 +44,12 @@ Run the tool with the desired flags:
 Example usage:
 
 ```sh
-./term-monitor -ram -cpu
+./term-monitor -ram -cpu -proc -ping
 ```
+
+The CLI should display something like this :
+
+![Example of term-monitor in action](https://raw.githubusercontent.com/your-username/term-monitor/main/docs/screenshot.png)
 
 This command will display both RAM and CPU usage in graphs.
 
@@ -59,4 +64,3 @@ This project is licensed under the MIT License.
 ## Author
 
 Created by **Dorian TERBAH**
-
