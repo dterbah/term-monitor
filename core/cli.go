@@ -28,7 +28,7 @@ var Graphs = []GraphInformation{
 		ping, _ := metric.GetPing()
 		return ping
 	}},
-	{title: "Proccesse count", callback: func() float64 {
+	{title: "Proccesses count", callback: func() float64 {
 		proccess := adapter.GopsProcessAdapter{}
 		return float64(metric.GetProcessesCount(proccess))
 	}},
