@@ -17,17 +17,10 @@
 
 - Go 1.18 or later
 
-### Clone the repository
+### Install the CLI
 
 ```sh
-git clone https://github.com/your-username/term-monitor.git
-cd term-monitor
-```
-
-### Build the project
-
-```sh
-go build -o term-monitor
+go install github.com/your-username/term-monitor@latest
 ```
 
 ## Usage
@@ -53,7 +46,7 @@ Example usage:
 ./term-monitor -ram -cpu
 ```
 
-This command will display both RAM and CPU usage.
+This command will display both RAM and CPU usage in graphs.
 
 ## Contributing
 
@@ -65,5 +58,5 @@ This project is licensed under the MIT License.
 
 ## Author
 
-Created by **Your Name**
+Created by **Dorian TERBAH**
 
