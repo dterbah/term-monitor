@@ -15,7 +15,7 @@
 
 ### Prerequisites
 
-- Go 1.18 or later
+- Go 1.24 or later
 
 ### Install the CLI
 
