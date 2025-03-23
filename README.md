@@ -44,14 +44,12 @@ Run the tool with the desired flags:
 Example usage:
 
 ```sh
-./term-monitor -ram -cpu -proc -ping
+term-monitor -ram -cpu -proc -ping
 ```
 
 The CLI should display something like this :
 
 ![Example of term-monitor in action](https://raw.githubusercontent.com/dterbah/term-monitor/main/docs/screenshot.png)
-
-This command will display both RAM and CPU usage in graphs.
 
 ## Contributing
 
