@@ -32,6 +32,8 @@ func DisplayGraph(position GraphPosition, dataGenerator DataGenerator, title str
 	plot.AxesColor = ui.ColorWhite
 	plot.LineColors[0] = ui.ColorGreen
 
+	width, _, _ := GetTerminalSize()
+
 	ticker := time.NewTicker(time.Second)
 
 	for {
@@ -39,7 +41,7 @@ func DisplayGraph(position GraphPosition, dataGenerator DataGenerator, title str
 		case <-ticker.C:
 			value := dataGenerator()
 			plot.Data[0] = append(plot.Data[0], value)
-			if len(plot.Data[0]) > 20 {
+			if len(plot.Data[0]) > (width / 2) {
 				plot.Data[0] = plot.Data[0][1:]
 			}
 			ui.Render(plot)
