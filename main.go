@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"log"
+	"os"
 
 	"github.com/dterbah/term-monitor/core"
 )
@@ -14,6 +16,12 @@ func main() {
 	showProcess := flag.Bool("proc", false, "Display number of processes")
 
 	flag.Parse()
+
+	if !(*showRAM || *showCPU || *showPing || *showProcess) {
+		log.Fatal("Error: you must specify at least one option (--ram, --cpu, --ping, --proc)")
+		flag.Usage()
+		os.Exit(1)
+	}
 
 	core.RunCLI(core.CLIArgs{
 		ShowRAM:       *showRAM,
